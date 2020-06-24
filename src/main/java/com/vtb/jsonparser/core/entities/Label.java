@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.*;
 @EqualsAndHashCode
 @ToString
 @Data
-public class Label {
+public class Label implements Entity{
     @XmlElement
     @JsonProperty("name")
     @NonNull

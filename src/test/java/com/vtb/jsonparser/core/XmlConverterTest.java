@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -168,8 +169,41 @@ public class XmlConverterTest {
     }
 
     @Test
+    public void newFromObjectToFileTest() throws JAXBException, IOException {
+        teams.get(0).serializeToXml(FILENAME);
+//        XmlConverter.toXML(FILENAME, teams.get(0), Team.class);
+//        String result = Files.lines(Paths.get(FILENAME)).reduce("", String::concat);
+        StringBuilder resultReader1 = new StringBuilder();
+        FileInputStream fstream = new FileInputStream(FILENAME);
+        BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+        String strLine;
+        while ((strLine = br.readLine()) != null){
+            resultReader1.append(strLine).append("\n");
+        }
+
+        assertEquals(stringBuilder.toString(), resultReader1.toString());
+    }
+
+
+    @Test
     public void fromFileToObjectTest() throws JAXBException, FileNotFoundException {
         Team newTeam = XmlConverter.toJavaObject(FILENAME, Team.class);
         assertEquals(teams.get(0), newTeam);
     }
+
+    @Test
+    public void fromFileToObjectTest2() throws JAXBException, FileNotFoundException {
+        Entity entity = (Entity) XmlConverter.toJavaObject(FILENAME, Objects.requireNonNull(EntityFactory.createEntityByType(EntityType.TEAM)).getClass());
+//        Team newTeam = XmlConverter.toJavaObject(FILENAME, Team.class);
+        assertEquals(teams.get(0), entity);
+    }
+
+    @Test
+    public void fromFileToObjectTest3() throws JAXBException, FileNotFoundException {
+        Team team1 = (Team) Objects.requireNonNull(EntityFactory.createEntityByType(EntityType.TEAM)).deserializeFromXml(FILENAME);
+        Entity team2 = Objects.requireNonNull(EntityFactory.createEntityByType(EntityType.TEAM)).deserializeFromXml(FILENAME);
+//        Team newTeam = XmlConverter.toJavaObject(FILENAME, Team.class);
+        assertEquals(teams.get(0), team2);
+    }
+
 }

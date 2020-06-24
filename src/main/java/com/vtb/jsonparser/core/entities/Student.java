@@ -20,7 +20,7 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @Data
-public class Student {
+public class Student implements Entity{
     @XmlElement
     @JsonProperty("id")
     @NonNull

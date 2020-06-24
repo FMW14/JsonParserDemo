@@ -12,10 +12,10 @@ public class JsonConverter {
     private static final Logger logger = LogManager.getLogger(JsonConverter.class);
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static <T> void toJSON(String fileName, T teams) {
+    public static <T> void toJSON(String fileName, T obj) {
         try {
             logger.info("Сериализация в файл " + fileName);
-            objectMapper.writeValue(new File(fileName), teams);
+            objectMapper.writeValue(new File(fileName), obj);
         } catch (IOException ignored){
             logger.warn("Ошибка сериализации файла " + fileName);
         }

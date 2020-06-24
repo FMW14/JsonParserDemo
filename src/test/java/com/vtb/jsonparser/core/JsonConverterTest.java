@@ -20,6 +20,7 @@ public class JsonConverterTest {
     String expectedResult = "[{\"id\":1,\"name\":\"team1\",\"students\":[{\"id\":1,\"firstName\":\"Ivan\",\"secondName\":\"Ivanov\",\"phone\":\"+6225525\",\"email\":\"safsf@afas.ru\",\"tasks\":[{\"id\":1,\"name\":\"task 1\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfafafa\"},{\"id\":2,\"name\":\"task 2\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfasfasfafs\"}]},{\"id\":2,\"firstName\":\"Igor\",\"secondName\":\"Igorov\",\"phone\":\"+722245525\",\"email\":\"igor@mail.ru\",\"tasks\":[{\"id\":1,\"name\":\"task 1\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfafafa\"},{\"id\":2,\"name\":\"task 2\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfasfasfafs\"}]}],\"tasks\":[{\"id\":1,\"name\":\"task 1\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfafafa\"},{\"id\":2,\"name\":\"task 2\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfasfasfafs\"}]}]";
     String expectedResult1 = "{\"teams\":[{\"id\":1,\"name\":\"team1\",\"students\":[{\"id\":1,\"firstName\":\"Ivan\",\"secondName\":\"Ivanov\",\"phone\":\"+6225525\",\"email\":\"safsf@afas.ru\",\"tasks\":[{\"id\":1,\"name\":\"task 1\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfafafa\"},{\"id\":2,\"name\":\"task 2\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfasfasfafs\"}]},{\"id\":2,\"firstName\":\"Igor\",\"secondName\":\"Igorov\",\"phone\":\"+722245525\",\"email\":\"igor@mail.ru\",\"tasks\":[{\"id\":1,\"name\":\"task 1\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfafafa\"},{\"id\":2,\"name\":\"task 2\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfasfasfafs\"}]}],\"tasks\":[{\"id\":1,\"name\":\"task 1\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfafafa\"},{\"id\":2,\"name\":\"task 2\",\"status\":\"done\",\"labels\":[{\"name\":\"Java programming\"},{\"name\":\"Version control\"}],\"description\":\"sfasfasfafs\"}]}]}";
     Teams teamsClass;
+    Team team;
     @BeforeEach
     public void init() {
         List<Label> labelList = List.of(
@@ -35,7 +36,8 @@ public class JsonConverterTest {
                 new Student(2L, "Igor", "Igorov", "+722245525", "igor@mail.ru", tasks)
         );
 
-        Team team = new Team(1L, "team1", students, tasks);
+        team = new Team(1L, "team1", students, tasks);
+
 
         teams.add(team);
         teamsClass = new Teams(teams);
@@ -52,6 +54,24 @@ public class JsonConverterTest {
     public void FromFileToObject() throws IOException {
         List<Team> newTeams = Arrays.asList(JsonConverter.toJavaObject(FILENAME, Team[].class));
         assertEquals(teams.get(0).toString(), newTeams.get(0).toString());
+    }
+
+    @Test
+    public void newJsonConverterTest() throws IOException {
+//        NewJsonConverter.toJSON(FILENAME, teamsClass);
+        teamsClass.serializeToJson(FILENAME);
+        String result = Files.lines(Paths.get(FILENAME)).reduce("", String::concat);
+        assertEquals(expectedResult1, result);
+    }
+
+    @Test
+    public void newFromFileToObject() throws IOException {
+        Teams newTeams = (Teams) JsonConverter.toJavaObject(FILENAME, teamsClass.getClass());
+        Entity team1 = EntityFactory.createEntityByType(EntityType.TEAM).deserializeFromJson(FILENAME);
+//        Teams newTeams = new Teams();
+//        newTeams = (Teams) newTeams.deserializeFromJson(FILENAME);
+        assertEquals(teams.get(0).toString(), newTeams.getTeams().get(0).toString());
+
     }
 
     @Test

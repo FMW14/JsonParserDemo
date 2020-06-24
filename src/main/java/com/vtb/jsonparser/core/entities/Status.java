@@ -2,6 +2,7 @@ package com.vtb.jsonparser.core.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
+
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
@@ -17,7 +18,7 @@ public enum Status {
     private String name;
 
     Status(String name) {
-         this.name = name;
+        this.name = name;
     }
 
     @JsonValue
